@@ -22,7 +22,6 @@ export const Container = styled.main`
 
 export const InputContainer = styled.div`
   display: flex;
-  /* width: 100%; */
   margin: 0 20px;
 `;
 
@@ -37,5 +36,37 @@ export const ErrorList = styled.ul`
   li {
     color: #c53030;
     font-size: 0.9rem;
+  }
+`;
+
+export const ShortsterContainer = styled.div`
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  margin: 30px 20px 0;
+  padding: 30px;
+  text-align: left;
+
+  h3 {
+    color: #4bb543;
+    font-size: 1.4rem;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  span {
+    color: #424242;
+    font-size: 1.1rem;
+    margin: 0;
+
+    & + span {
+      margin-top: 20px;
+    }
+
+    a {
+      margin-left: 12px;
+      text-decoration: none;
+    }
   }
 `;
