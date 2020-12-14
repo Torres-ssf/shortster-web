@@ -6,8 +6,8 @@ export const Container = styled.main`
   flex-direction: column;
   margin: 0 auto;
   max-width: 900px;
+  min-width: 480px;
   text-align: center;
-  width: 100%;
 
   h1 {
     margin-top: 30px;
@@ -22,12 +22,20 @@ export const Container = styled.main`
 
 export const InputContainer = styled.div`
   display: flex;
-  width: 100%;
+  /* width: 100%; */
+  margin: 0 20px;
+`;
 
-  button {
-    background-color: #7fb685;
-    border: none;
-    border-radius: 0 10px 10px 0;
-    color: white;
+export const ErrorList = styled.ul`
+  display: flex;
+  list-style: none;
+  flex-direction: column;
+  padding: 0;
+  margin: 6px 28px;
+  text-align: left;
+
+  li {
+    color: #c53030;
+    font-size: 0.9rem;
   }
 `;
