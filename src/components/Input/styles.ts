@@ -22,13 +22,13 @@ export const Container = styled.div<ContainerProps>`
   ${props =>
     props.isFocused &&
     css`
-      border: 2px solid #7fb685;
+      border: 2px solid #3866ff;
     `}
 
   ${props =>
     props.isFilled &&
     css`
-      border: 2px solid #7fb685;
+      border: 2px solid #3866ff;
     `}
     
     input {
