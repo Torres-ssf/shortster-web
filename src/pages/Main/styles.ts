@@ -20,9 +20,20 @@ export const Container = styled.main`
   }
 `;
 
-export const InputContainer = styled.div`
+export const InputContainer = styled.form`
   display: flex;
+  flex-direction: column;
   margin: 0 20px;
+  text-align: left;
+
+  label {
+    font-size: 0.9rem;
+    margin: 14px 0 10px 10px;
+  }
+
+  button {
+    margin-top: 22px;
+  }
 `;
 
 export const ErrorList = styled.ul`
