@@ -19,8 +19,14 @@ interface Shortster {
   url: string | undefined;
 }
 
+type FieldErrors = Shortster;
+
 export const Main: React.FC = () => {
-  const [inputValue, setInputValue] = useState('');
+  const [shortsterInputValue, setShortsterInputValue] = useState('');
+
+  const [customShortsterInput, setCustomShortsterInput] = useState('');
+
+  const [inputError, setInputErrors] = useState<FieldErrors>({} as FieldErrors);
 
   const [createdShorster, setCreatedShortster] = useState<Shortster>(
     {} as Shortster,
@@ -30,54 +36,84 @@ export const Main: React.FC = () => {
 
   const [errorMessages, setErrorMessages] = useState<String[]>([]);
 
-  const handleCreateShortster = useCallback(async () => {
-    setLoading(true);
+  const handleCreateShortster = useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault();
 
-    setCreatedShortster({ code: undefined, url: undefined });
+      setLoading(true);
 
-    let url = inputValue.toLowerCase();
+      setCreatedShortster({ code: undefined, url: undefined });
 
-    const regex = new RegExp('^(http|https)://', 'i');
+      let url = shortsterInputValue.toLowerCase();
 
-    if (!regex.test(inputValue)) {
-      url = 'http://'.concat(url);
-    }
+      const testHttpRegex = new RegExp('^(http|https)://', 'i');
 
-    try {
-      const schema = Yup.object().shape({
-        url: Yup.string()
-          .url('a valid url is needed to create a shortster')
-          .required(),
-      });
-
-      await schema.validate({ url }, { abortEarly: false });
-
-      setErrorMessages([]);
-
-      const { data } = await api.post('/shortster', { url });
-
-      setCreatedShortster({
-        code: data.code,
-        url: data.url,
-      });
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err);
-
-        setErrorMessages(Object.values(errors));
+      if (!testHttpRegex.test(shortsterInputValue)) {
+        url = 'http://'.concat(url);
       }
 
-      if (err.response && err.response.data) {
-        const { message } = err.response.data;
+      const shortsterObject = {};
 
-        setErrorMessages(
-          typeof message === 'string' ? [message] : [...message],
-        );
+      if (customShortsterInput !== '') {
+        Object.assign(shortsterObject, {
+          url,
+          code: customShortsterInput,
+        });
+      } else {
+        Object.assign(shortsterObject, {
+          url,
+        });
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [inputValue]);
+
+      try {
+        const schema = Yup.object().shape({
+          url: Yup.string()
+            .url('a valid url is needed to create a shortster')
+            .required(),
+          code: Yup.string()
+            .notRequired()
+            .min(4, 'custom shortster code should have at least 4 chars')
+            .matches(
+              /^[0-9a-zA-Z]+$/,
+              'shortster code should contains only letters (upper and lower case) and digits',
+            ),
+        });
+
+        await schema.validate(shortsterObject, { abortEarly: false });
+
+        setInputErrors({} as FieldErrors);
+
+        setErrorMessages([]);
+
+        const { data } = await api.post('/shortster', shortsterObject);
+
+        setCreatedShortster({
+          code: data.code,
+          url: data.url,
+        });
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          const { url: urlError, code: codeError } = errors;
+
+          setInputErrors({
+            url: urlError,
+            code: codeError,
+          });
+        } else if (err.response && err.response.data) {
+          const { message } = err.response.data;
+
+          setErrorMessages(
+            typeof message === 'string' ? [message] : [...message],
+          );
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [shortsterInputValue, customShortsterInput],
+  );
 
   const { code, url } = useMemo(() => {
     return createdShorster;
@@ -99,21 +135,31 @@ export const Main: React.FC = () => {
 
       <p>Paste a URL to create a new shortster</p>
 
-      <InputContainer>
+      <InputContainer onSubmit={handleCreateShortster}>
+        <label htmlFor="url">Url</label>
         <Input
+          id="url"
           name="url"
-          type="url"
           placeholder="Paste a URL"
-          value={inputValue}
-          onChange={e => setInputValue(e.target.value)}
-          required
+          value={shortsterInputValue}
+          error={inputError.url}
+          onChange={e => setShortsterInputValue(e.target.value)}
         />
-        <Button type="button" loading={loading} onClick={handleCreateShortster}>
+        <ErrorList>{errorList}</ErrorList>
+
+        <label htmlFor="url">Shortster custom code (optional)</label>
+        <Input
+          name="customShortster"
+          type="text"
+          placeholder="Select a custom code if you want, not required"
+          value={customShortsterInput}
+          error={inputError.code}
+          onChange={e => setCustomShortsterInput(e.target.value)}
+        />
+        <Button type="submit" loading={loading}>
           Create shortster
         </Button>
       </InputContainer>
-
-      <ErrorList>{errorList}</ErrorList>
 
       {code && (
         <ShortsterContainer>
