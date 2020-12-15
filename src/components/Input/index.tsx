@@ -1,14 +1,19 @@
+import { EROFS } from 'constants';
 import React, {
   useRef,
   useState,
   useCallback,
   InputHTMLAttributes,
 } from 'react';
-import { Container } from './styles';
+import { FiAlertCircle } from 'react-icons/fi';
 
-export const Input: React.FC<InputHTMLAttributes<HTMLInputElement>> = ({
-  ...rest
-}) => {
+import { Container, Error } from './styles';
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  error?: string;
+}
+
+export const Input: React.FC<InputProps> = ({ error, ...rest }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isFocused, setIsFocused] = useState(false);
@@ -25,7 +30,7 @@ export const Input: React.FC<InputHTMLAttributes<HTMLInputElement>> = ({
   }, []);
 
   return (
-    <Container isFocused={isFocused} isFilled={isFilled}>
+    <Container isErrored={!!error} isFocused={isFocused} isFilled={isFilled}>
       <input
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
@@ -33,6 +38,12 @@ export const Input: React.FC<InputHTMLAttributes<HTMLInputElement>> = ({
         ref={inputRef}
         {...rest}
       />
+
+      {error && (
+        <Error title={error}>
+          <FiAlertCircle color="#c53030" size={20} />
+        </Error>
+      )}
     </Container>
   );
 };
