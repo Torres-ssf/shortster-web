@@ -36,20 +36,6 @@ export const InputContainer = styled.form`
   }
 `;
 
-export const ErrorList = styled.ul`
-  display: flex;
-  list-style: none;
-  flex-direction: column;
-  padding: 0;
-  margin: 6px 28px;
-  text-align: left;
-
-  li {
-    color: #c53030;
-    font-size: 0.9rem;
-  }
-`;
-
 export const ShortsterContainer = styled.div`
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);

@@ -7,12 +7,8 @@ import { Button } from '../../components/Button';
 import { api } from '../../services/api';
 import { getValidationErrors } from '../../util/getValidationErrors';
 
-import {
-  Container,
-  InputContainer,
-  ErrorList,
-  ShortsterContainer,
-} from './styles';
+import { Container, InputContainer, ShortsterContainer } from './styles';
+import { useToast } from '../../hooks/toast';
 
 interface Shortster {
   code: string | undefined;
@@ -34,7 +30,7 @@ export const Main: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const [errorMessages, setErrorMessages] = useState<String[]>([]);
+  const { addToast } = useToast();
 
   const handleCreateShortster = useCallback(
     async (event: React.FormEvent) => {
@@ -83,13 +79,17 @@ export const Main: React.FC = () => {
 
         setInputErrors({} as FieldErrors);
 
-        setErrorMessages([]);
-
         const { data } = await api.post('/shortster', shortsterObject);
 
         setCreatedShortster({
           code: data.code,
           url: data.url,
+        });
+
+        addToast({
+          type: 'success',
+          title: 'Shortster successfully created',
+          description: 'You can starting using your shortster already.',
         });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -104,30 +104,22 @@ export const Main: React.FC = () => {
         } else if (err.response && err.response.data) {
           const { message } = err.response.data;
 
-          setErrorMessages(
-            typeof message === 'string' ? [message] : [...message],
-          );
+          addToast({
+            type: 'error',
+            title: 'Shortster not created',
+            description: typeof message === 'string' ? message : message[0],
+          });
         }
       } finally {
         setLoading(false);
       }
     },
-    [shortsterInputValue, customShortsterInput],
+    [shortsterInputValue, customShortsterInput, addToast],
   );
 
   const { code, url } = useMemo(() => {
     return createdShorster;
   }, [createdShorster]);
-
-  const errorList = useMemo(() => {
-    if (errorMessages.length === 0) {
-      return <></>;
-    }
-
-    return errorMessages.map(message => {
-      return <li>{message}</li>;
-    });
-  }, [errorMessages]);
 
   return (
     <Container>
@@ -145,7 +137,6 @@ export const Main: React.FC = () => {
           error={inputError.url}
           onChange={e => setShortsterInputValue(e.target.value)}
         />
-        <ErrorList>{errorList}</ErrorList>
 
         <label htmlFor="url">Shortster custom code (optional)</label>
         <Input
