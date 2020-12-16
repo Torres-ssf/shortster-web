@@ -120,11 +120,11 @@ export const Main: React.FC = () => {
           <h3>Shortster successfully created</h3>
           <span>
             Shortster:
-            <Link to="/code">{`shorster/${code}`}</Link>
+            <Link to={`/${code}`} target="_blank">{`${code}`}</Link>
           </span>
           <span>
             Long url:
-            <Link to="/code">{`${url}`}</Link>
+            <a href={`${url}`} target="_blank" rel="noreferrer">{`${url}`}</a>
           </span>
         </ShortsterContainer>
       )}
