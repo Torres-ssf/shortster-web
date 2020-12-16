@@ -14,11 +14,12 @@ const loading = keyframes`
 export const Container = styled.button<ContainerProps>`
   background-color: ${props => (props.loading ? '#A3A3A3' : '#3866ff')};
   border: none;
-  border-radius: 0 10px 10px 0;
+  border-radius: 10px;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 60px;
   width: 200px;
   transition: 300ms;
 
