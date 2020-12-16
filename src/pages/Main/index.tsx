@@ -13,6 +13,7 @@ import {
   ErrorList,
   ShortsterContainer,
 } from './styles';
+import { useToast } from '../../hooks/toast';
 
 interface Shortster {
   code: string | undefined;
@@ -35,6 +36,8 @@ export const Main: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const [errorMessages, setErrorMessages] = useState<String[]>([]);
+
+  const { addToast } = useToast();
 
   const handleCreateShortster = useCallback(
     async (event: React.FormEvent) => {
@@ -91,6 +94,12 @@ export const Main: React.FC = () => {
           code: data.code,
           url: data.url,
         });
+
+        addToast({
+          type: 'success',
+          title: 'Shortster successfully created',
+          description: 'You can starting using your shortster already.',
+        });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -112,7 +121,7 @@ export const Main: React.FC = () => {
         setLoading(false);
       }
     },
-    [shortsterInputValue, customShortsterInput],
+    [shortsterInputValue, customShortsterInput, addToast],
   );
 
   const { code, url } = useMemo(() => {
