@@ -7,12 +7,7 @@ import { Button } from '../../components/Button';
 import { api } from '../../services/api';
 import { getValidationErrors } from '../../util/getValidationErrors';
 
-import {
-  Container,
-  InputContainer,
-  ErrorList,
-  ShortsterContainer,
-} from './styles';
+import { Container, InputContainer, ShortsterContainer } from './styles';
 import { useToast } from '../../hooks/toast';
 
 interface Shortster {
@@ -34,8 +29,6 @@ export const Main: React.FC = () => {
   );
 
   const [loading, setLoading] = useState(false);
-
-  const [errorMessages, setErrorMessages] = useState<String[]>([]);
 
   const { addToast } = useToast();
 
@@ -86,8 +79,6 @@ export const Main: React.FC = () => {
 
         setInputErrors({} as FieldErrors);
 
-        setErrorMessages([]);
-
         const { data } = await api.post('/shortster', shortsterObject);
 
         setCreatedShortster({
@@ -113,9 +104,11 @@ export const Main: React.FC = () => {
         } else if (err.response && err.response.data) {
           const { message } = err.response.data;
 
-          setErrorMessages(
-            typeof message === 'string' ? [message] : [...message],
-          );
+          addToast({
+            type: 'error',
+            title: 'Shortster not created',
+            description: typeof message === 'string' ? message : message[0],
+          });
         }
       } finally {
         setLoading(false);
@@ -127,16 +120,6 @@ export const Main: React.FC = () => {
   const { code, url } = useMemo(() => {
     return createdShorster;
   }, [createdShorster]);
-
-  const errorList = useMemo(() => {
-    if (errorMessages.length === 0) {
-      return <></>;
-    }
-
-    return errorMessages.map(message => {
-      return <li>{message}</li>;
-    });
-  }, [errorMessages]);
 
   return (
     <Container>
@@ -154,7 +137,6 @@ export const Main: React.FC = () => {
           error={inputError.url}
           onChange={e => setShortsterInputValue(e.target.value)}
         />
-        <ErrorList>{errorList}</ErrorList>
 
         <label htmlFor="url">Shortster custom code (optional)</label>
         <Input
