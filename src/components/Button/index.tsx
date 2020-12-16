@@ -12,7 +12,7 @@ export const Button: React.FC<ButtonAttributes> = ({
   ...rest
 }) => {
   return (
-    <Container loading={loading} {...rest}>
+    <Container loading={loading ? 1 : 0} {...rest}>
       {loading ? <LoadingContainer /> : children}
     </Container>
   );

@@ -1,10 +1,10 @@
 import styled, { css, keyframes } from 'styled-components';
 
 interface ContainerProps {
-  loading: boolean;
+  loading: 0 | 1;
 }
 
-const loading = keyframes`
+const loadingAnimation = keyframes`
  {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -33,7 +33,7 @@ export const Container = styled.button<ContainerProps>`
 `;
 
 export const LoadingContainer = styled.div`
-  animation: ${loading} 800ms linear infinite;
+  animation: ${loadingAnimation} 800ms linear infinite;
   border: 5px solid #f3f3f3;
   border-radius: 50%;
   border-top: 5px solid #3866ff;
