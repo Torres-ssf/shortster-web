@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { format } from 'date-fns';
 
 import { api } from '../../services/api';
 
@@ -70,10 +69,10 @@ export const ShortsterStats: React.FC = () => {
         <StatLabel>{`${url}`}</StatLabel>
 
         <StatLabelHeading>Created</StatLabelHeading>
-        <StatLabel>{`${format(new Date(created_at), 'PPPppp')}`}</StatLabel>
+        <StatLabel>{`${created_at}`}</StatLabel>
 
         <StatLabelHeading>Last Access</StatLabelHeading>
-        <StatLabel>{`${format(new Date(last_access), 'PPPppp')}`}</StatLabel>
+        <StatLabel>{last_access}</StatLabel>
 
         <StatLabelHeading>Times Accessed</StatLabelHeading>
         <StatLabel>{`${times_accessed}`}</StatLabel>
