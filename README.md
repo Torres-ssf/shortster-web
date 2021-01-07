@@ -40,10 +40,6 @@ This simple webpage was created to consume a [RESTful API](https://github.com/To
 
 The project was built using the following languages stacks:
 
-```sh
-Front-End(client-side)
-```
-
 - [React](https://github.com/facebook/react)
 - Typescript
 - [Styled-Components](https://styled-components.com/)
